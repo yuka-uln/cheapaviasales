@@ -4,13 +4,13 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,10 +19,6 @@ import java.util.TimerTask;
 
 
 public class App extends Application {
-
-    // one icon location is shared between the application tray icon and task bar icon.
-    private static final String iconImageLoc =
-            "http://icons.iconarchive.com/icons/scafer31000/bubble-circle-3/16/GameCenter-icon.png";
 
     // application stage is stored so that it can be shown and hidden based on system tray icon operations.
     private Stage stage;
@@ -57,6 +53,7 @@ public class App extends Application {
         Scene scene = new Scene(root, 300, 250);
 
         stage.setTitle("Hello World!");
+        stage.getIcons().addAll(new Image("/images/icon128.png"), new Image("/images/icon16.png"));
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> stage.hide());
 
@@ -79,8 +76,7 @@ public class App extends Application {
 
             // set up a system tray icon.
             java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
-            URL imageLoc = new URL(iconImageLoc);
-            java.awt.Image image = ImageIO.read(imageLoc);
+            java.awt.Image image = ImageIO.read(getClass().getResourceAsStream("/images/icon16.png"));
             java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image);
 
             ActionListener showAction = event -> Platform.runLater(() -> {
