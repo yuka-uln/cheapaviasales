@@ -2,10 +2,14 @@ package org.teamyeah.cheapaviasales;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -13,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -39,26 +44,52 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
+        FlightModel model = new FlightModel();
+        model.setFlights(FXCollections.observableArrayList(
+                new Flight("Ульяновск", "Москва", LocalDate.now(), LocalDate.now().plusDays(1), "5678"),
+                new Flight("Москва", "Берлин", LocalDate.now(), LocalDate.now().plusDays(2), "16723"),
+                new Flight("Москва", "Берлин", LocalDate.now(), LocalDate.now().plusDays(2), "12723")
+        ));
+
         this.stage = stage;
         Platform.setImplicitExit(false);
         javax.swing.SwingUtilities.invokeLater(this::setTrayIcon);
 
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(event -> System.out.println("Hello World!"));
+        AnchorPane root = new AnchorPane();
+        root.setPadding(new Insets(12));
 
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        ListView<Flight> flightListView = new ListView<>();
+        flightListView.setItems(model.flightsProperty());
+        flightListView.setCellFactory(listView -> new FlightCell());
+        flightListView.setFocusTraversable(false);
+        flightListView.setSelectionModel(new NoSelectionModel<>());
 
-        Scene scene = new Scene(root, 300, 250);
+        Button addFlightBtn = new Button("Добавить");
+        addFlightBtn.setOnAction(event -> model.flightsProperty().add(new Flight()));
 
-        stage.setTitle("Hello World!");
+        VBox contents = new VBox(4d, flightListView, addFlightBtn);
+        VBox.setVgrow(flightListView, Priority.ALWAYS);
+        addFlightBtn.setAlignment(Pos.CENTER_RIGHT);
+        contents.setAlignment(Pos.CENTER_RIGHT);
+
+        AnchorPane.setLeftAnchor(contents, 0d);
+        AnchorPane.setTopAnchor(contents, 0d);
+        AnchorPane.setRightAnchor(contents, 0d);
+        AnchorPane.setBottomAnchor(contents, 0d);
+
+        root.getChildren().add(contents);
+
+        Scene scene = new Scene(root, 550, 500);
+
+        stage.setTitle("Рейсы");
         stage.getIcons().addAll(new Image("/images/icon128.png"), new Image("/images/icon16.png"));
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> stage.hide());
 
         stage.setScene(scene);
+        stage.show();
     }
+
 
     /**
      * Sets up a system tray icon for the application.
@@ -137,5 +168,60 @@ public class App extends Application {
             System.out.println("Unable to init system tray");
             e.printStackTrace();
         }
+    }
+
+    private static class NoSelectionModel<T> extends MultipleSelectionModel<T> {
+        @Override
+        public ObservableList<Integer> getSelectedIndices() {
+            return FXCollections.emptyObservableList();
+        }
+
+        @Override
+        public ObservableList<T> getSelectedItems() {
+            return FXCollections.emptyObservableList();
+        }
+
+        @Override
+        public void selectIndices(int index, int... indices) { }
+
+        @Override
+        public void selectAll() { }
+
+        @Override
+        public void selectFirst() { }
+
+        @Override
+        public void selectLast() { }
+
+        @Override
+        public void clearAndSelect(int index) { }
+
+        @Override
+        public void select(int index) { }
+
+        @Override
+        public void select(Object obj) { }
+
+        @Override
+        public void clearSelection(int index) { }
+
+        @Override
+        public void clearSelection() { }
+
+        @Override
+        public boolean isSelected(int index) {
+            return false;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+
+        @Override
+        public void selectPrevious() { }
+
+        @Override
+        public void selectNext() { }
     }
 }

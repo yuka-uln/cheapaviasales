@@ -8,6 +8,10 @@
     <artifactId>cheapaviasales</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
+	
+    <organization>
+        <name>Team Yeah</name>
+    </organization>
 
     <build>
         <finalName>CheapAviaSales</finalName>
@@ -18,7 +22,6 @@
                 <version>8.1.2</version>
                 <configuration>
                     <mainClass>org.teamyeah.cheapaviasales.App</mainClass>
-                    <vendor>Team Yeah</vendor>
                 </configuration>
             </plugin>
         </plugins>
